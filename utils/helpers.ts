@@ -149,6 +149,54 @@ export const getDeviceStatusLabel = (status: string): string => {
   return status === 'online' ? 'Online' : 'Offline'
 }
 
+export const getDrawerStatusLabel = (status: string): string => {
+  switch (status) {
+    case 'open':
+      return 'Terbuka'
+    case 'active':
+      return 'Sedang Digunakan'
+    case 'closed':
+    default:
+      return 'Tertutup'
+  }
+}
+
+export const getDrawerStatusColor = (status: string): string => {
+  switch (status) {
+    case 'open':
+      return 'text-warning-600'
+    case 'active':
+      return 'text-success-600'
+    case 'closed':
+    default:
+      return 'text-gray-500'
+  }
+}
+
+export const getStockStatusLabel = (status: string): string => {
+  switch (status) {
+    case 'low':
+      return 'Stok Menipis'
+    case 'empty':
+      return 'Habis'
+    case 'available':
+    default:
+      return 'Tersedia'
+  }
+}
+
+export const getStockStatusColor = (status: string): string => {
+  switch (status) {
+    case 'low':
+      return 'text-warning-600'
+    case 'empty':
+      return 'text-danger-600'
+    case 'available':
+    default:
+      return 'text-success-600'
+  }
+}
+
 export const formatBatteryLevel = (level: number): string => {
   return `${level}%`
 }

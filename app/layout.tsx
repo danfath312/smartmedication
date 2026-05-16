@@ -2,11 +2,12 @@ import type { Metadata } from 'next'
 import '../styles/globals.css'
 
 export const metadata: Metadata = {
-  title: 'Smart Medication Adherence System - IoT Monitoring',
+  title: 'Smart Automated Medication Dispenser - IoT Monitoring',
   description:
-    'Sistem monitoring konsumsi obat lansia berbasis IoT dengan ESP32, sensor pendeteksi obat, dan platform Blynk untuk membantu keluarga memantau kepatuhan minum obat secara real-time.',
+    'Smart Automated Medication Dispenser berbasis IoT dengan smart drawer management, monitoring realtime, dan kontrol obat dari website dashboard.',
   keywords: [
     'medication adherence',
+    'smart dispenser',
     'IoT',
     'elderly care',
     'health monitoring',
@@ -14,8 +15,18 @@ export const metadata: Metadata = {
     'ESP32',
   ],
   authors: [{ name: 'Smart Medication Team' }],
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
+  openGraph: {
+    title: 'Smart Automated Medication Dispenser',
+    description:
+      'Prototype healthcare IoT startup dashboard for automated medication drawers and realtime monitoring.',
+    type: 'website',
+  },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({

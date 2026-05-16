@@ -71,6 +71,40 @@ export interface Notification {
   actionUrl?: string
 }
 
+export type DrawerStatus = 'closed' | 'open' | 'active'
+export type DrawerStockStatus = 'available' | 'low' | 'empty'
+
+export interface MedicationDrawer {
+  id: string
+  drawerNumber: number
+  medicationName: string
+  dosage: string
+  schedule: string
+  notes: string
+  stock: number
+  stockStatus: DrawerStockStatus
+  status: DrawerStatus
+  consumptionState: 'pending' | 'taken' | 'missed'
+  lastAction: string
+  updatedAt: string
+}
+
+export interface DispenserTimelineEvent {
+  id: string
+  title: string
+  description: string
+  timestamp: string
+  type: 'info' | 'success' | 'warning' | 'alert'
+}
+
+export interface DispenserFormState {
+  medicationName: string
+  dosage: string
+  schedule: string
+  drawerNumber: number
+  notes: string
+}
+
 export interface SystemStatus {
   iotConnected: boolean
   blynkConnected: boolean
