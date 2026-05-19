@@ -3,8 +3,8 @@
  * Shows real-time status of ESP32, Blynk, Servo, and Sensor connections
  */
 
-import { Cloud, Cpu, Zap, Radio } from 'lucide-react'
-import { Badge } from './UIComponents'
+import { Zap } from 'lucide-react'
+import { Badge } from '@/components/common/UIComponents'
 import { cn } from '@/utils/helpers'
 
 export interface ConnectionStatusItem {

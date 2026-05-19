@@ -41,7 +41,6 @@ import {
 import {
   isDueWindow,
   isMissedWindow,
-  generateAutomationKey,
 } from '@/utils/simulationService'
 
 const flowSteps = [
@@ -54,17 +53,6 @@ const flowSteps = [
 
 const statusColors = ['#22c55e', '#0ea5e9', '#f59e0b']
 const processedAutomationWindows = new Set<string>()
-
-const toMinutes = (time: string) => {
-  const [hours, minutes] = time.trim().split(':').map(Number)
-  return hours * 60 + minutes
-}
-
-const parseScheduleTimes = (schedule: string) =>
-  schedule
-    .split('/')
-    .map((time) => time.trim())
-    .filter(Boolean)
 
 export function SmartDrawerDashboard() {
   const {

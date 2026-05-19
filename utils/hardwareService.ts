@@ -31,7 +31,7 @@ const defaultStatus: HardwareConnectionStatus = {
   sensorActive: false,
 }
 
-let hardwareConfig: HardwareConfig = {}
+// Note: hardwareConfig will be implemented when real hardware integration is added
 let connectionStatus: HardwareConnectionStatus = defaultStatus
 
 /**
@@ -45,8 +45,6 @@ let connectionStatus: HardwareConnectionStatus = defaultStatus
 export const initializeHardwareConnection = async (
   config: HardwareConfig
 ): Promise<boolean> => {
-  hardwareConfig = config
-
   try {
     // TODO: Implement real hardware initialization
     // - Test Blynk connection
@@ -167,7 +165,7 @@ export const getSensorData = async () => {
  * Returns unsubscribe function
  */
 export const subscribeToHardwareEvents = (
-  onUpdate: (event: any) => void
+  _onUpdate: (event: any) => void
 ): (() => void) => {
   // TODO: Implement real event subscription
   // - MQTT subscriptions
@@ -187,7 +185,6 @@ export const disconnectHardware = async (): Promise<void> => {
     // TODO: Implement real disconnect logic
     console.log('[HardwareService] Disconnecting from hardware')
     connectionStatus = defaultStatus
-    hardwareConfig = {}
   } catch (error) {
     console.error('[HardwareService] Disconnect failed:', error)
   }
