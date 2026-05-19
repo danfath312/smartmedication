@@ -38,6 +38,11 @@ import {
   getStockStatusColor,
   getStockStatusLabel,
 } from '@/utils/helpers'
+import {
+  isDueWindow,
+  isMissedWindow,
+  generateAutomationKey,
+} from '@/utils/simulationService'
 
 const flowSteps = [
   'Website Dashboard',
@@ -61,19 +66,6 @@ const parseScheduleTimes = (schedule: string) =>
     .map((time) => time.trim())
     .filter(Boolean)
 
-const isDueWindow = (simulatedTime: Date, schedule: string) => {
-  const currentMinutes = simulatedTime.getHours() * 60 + simulatedTime.getMinutes()
-  return parseScheduleTimes(schedule).some((time) => {
-    const targetMinutes = toMinutes(time)
-    return currentMinutes >= targetMinutes && currentMinutes < targetMinutes + 15
-  })
-}
-
-const isMissedWindow = (simulatedTime: Date, schedule: string) => {
-  const currentMinutes = simulatedTime.getHours() * 60 + simulatedTime.getMinutes()
-  return parseScheduleTimes(schedule).some((time) => currentMinutes > toMinutes(time) + 45)
-}
-
 export function SmartDrawerDashboard() {
   const {
     drawers,
@@ -84,6 +76,8 @@ export function SmartDrawerDashboard() {
     servoActive,
     buzzerActive,
     voiceReminderEnabled,
+    systemMode,
+    notificationSettings,
     setDeviceOnline,
     toggleVoiceReminder,
     saveSchedule,
@@ -93,6 +87,7 @@ export function SmartDrawerDashboard() {
     closeAllDrawers,
     markMissedMedication,
     restockDrawer,
+    setSystemMode,
   } = useDispenserStore()
 
   const [simulatedTime, setSimulatedTime] = useState(
@@ -116,6 +111,8 @@ export function SmartDrawerDashboard() {
   }, [])
 
   useEffect(() => {
+    if (systemMode !== 'simulation' || !notificationSettings.enableSimulation) return
+
     drawers.forEach((drawer: MedicationDrawer) => {
       if (!drawer.medicationName || drawer.consumptionState !== 'pending') return
 
@@ -133,7 +130,7 @@ export function SmartDrawerDashboard() {
         markMissedMedication(drawer.drawerNumber)
       }
     })
-  }, [drawers, simulatedTime, markMissedMedication, openDrawer])
+  }, [drawers, simulatedTime, markMissedMedication, openDrawer, systemMode, notificationSettings.enableSimulation])
 
   const activeDrawers: MedicationDrawer[] = drawers.filter((drawer: MedicationDrawer) => drawer.medicationName)
   const takenCount = activeDrawers.filter((drawer: MedicationDrawer) => drawer.consumptionState === 'taken').length
@@ -272,6 +269,68 @@ export function SmartDrawerDashboard() {
           {lowStockCount} laci mendekati batas stok aman. Isi ulang sebelum jadwal berikutnya.
         </Alert>
       )}
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">System Mode</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setSystemMode('simulation')}
+              className={cn(
+                'px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full',
+                systemMode === 'simulation'
+                  ? 'bg-sky-500 text-white shadow-md'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              )}
+            >
+              Simulasi
+            </button>
+            <button
+              onClick={() => setSystemMode('hardware')}
+              className={cn(
+                'px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full',
+                systemMode === 'hardware'
+                  ? 'bg-emerald-500 text-white shadow-md'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              )}
+            >
+              Hardware
+            </button>
+          </div>
+        </div>
+
+        {systemMode === 'simulation' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="rounded-2xl border border-sky-200 dark:border-sky-900/40 bg-sky-50 dark:bg-sky-900/20 p-4"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <FlaskConical className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+              <p className="text-sm font-semibold text-sky-900 dark:text-sky-300">Simulation Active</p>
+            </div>
+            <p className="text-xs text-sky-800 dark:text-sky-400">
+              Automation enabled: {notificationSettings.enableSimulation ? 'Yes' : 'No'}
+            </p>
+          </motion.div>
+        )}
+
+        {systemMode === 'hardware' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="rounded-2xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-900/20 p-4"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Wifi className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-300">Waiting for ESP32</p>
+            </div>
+            <p className="text-xs text-emerald-800 dark:text-emerald-400">
+              No automation running. Connect ESP32 device.
+            </p>
+          </motion.div>
+        )}
+      </div>
 
       <section className="grid gap-6 xl:grid-cols-[1.7fr_1fr]">
         <Card className="overflow-hidden">

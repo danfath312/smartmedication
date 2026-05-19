@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import '../styles/globals.css'
 
 export const metadata: Metadata = {
-  title: 'Smart Automated Medication Dispenser - IoT Monitoring',
+  title: 'Smart Automated Medication Drawer - IoT Monitoring',
   description:
-    'Smart Automated Medication Dispenser berbasis IoT dengan smart drawer management, monitoring realtime, dan kontrol obat dari website dashboard.',
+    'Smart Automated Medication Drawer berbasis IoT dengan smart drawer management, monitoring realtime, dan kontrol obat dari website dashboard.',
   keywords: [
     'medication adherence',
-    'smart dispenser',
+    'smart drawer',
     'IoT',
     'elderly care',
     'health monitoring',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Smart Medication Team' }],
   robots: 'index, follow',
   openGraph: {
-    title: 'Smart Automated Medication Dispenser',
+    title: 'Smart Automated Medication Drawer',
     description:
       'Prototype healthcare IoT startup dashboard for automated medication drawers and realtime monitoring.',
     type: 'website',

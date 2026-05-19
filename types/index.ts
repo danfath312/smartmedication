@@ -1,6 +1,18 @@
 export type MedicationStatus = 'taken' | 'late' | 'missed'
 export type DeviceStatus = 'online' | 'offline'
 export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night'
+export type SystemMode = 'simulation' | 'hardware'
+
+export interface NotificationSettings {
+  enableNotifications: boolean
+  enableVoiceReminder: boolean
+  enableSimulation: boolean
+  enableAutoDrawer: boolean
+  buzzerVolume: number // 0-100
+  reminderDelaySeconds: number
+  enableEmailNotification: boolean
+  enableWhatsAppNotification: boolean
+}
 
 export interface Medication {
   id: string

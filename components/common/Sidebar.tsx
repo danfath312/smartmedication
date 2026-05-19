@@ -8,6 +8,7 @@ import {
   Archive,
   Users,
   Info,
+  Settings,
   X,
 } from 'lucide-react'
 import { cn } from '@/utils/helpers'
@@ -19,9 +20,10 @@ interface SidebarProps {
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: Home },
-  { label: 'Smart Dispenser', href: '/dashboard/dispenser', icon: Archive },
+  { label: 'Smart Drawer', href: '/dashboard/dispenser', icon: Archive },
   { label: 'Jadwal Obat', href: '/dashboard/schedule', icon: Pill },
   { label: 'Monitoring Keluarga', href: '/dashboard/family', icon: Users },
+  { label: 'Pengaturan Sistem', href: '/dashboard/settings', icon: Settings },
   { label: 'Tentang Sistem', href: '/dashboard/about', icon: Info },
 ]
 

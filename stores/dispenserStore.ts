@@ -7,6 +7,18 @@ import type {
 } from '@/types'
 
 export type DispenserActionSource = 'manual' | 'automatic'
+export type SystemMode = 'simulation' | 'hardware'
+
+export interface NotificationSettings {
+  enableNotifications: boolean
+  enableVoiceReminder: boolean
+  enableSimulation: boolean
+  enableAutoDrawer: boolean
+  buzzerVolume: number // 0-100
+  reminderDelaySeconds: number
+  enableEmailNotification: boolean
+  enableWhatsAppNotification: boolean
+}
 
 interface DispenserState {
   drawers: MedicationDrawer[]
@@ -17,6 +29,8 @@ interface DispenserState {
   servoActive: boolean
   buzzerActive: boolean
   voiceReminderEnabled: boolean
+  systemMode: SystemMode
+  notificationSettings: NotificationSettings
   setDeviceOnline: (online: boolean) => void
   toggleVoiceReminder: () => void
   saveSchedule: (payload: DispenserFormState) => void
@@ -26,6 +40,8 @@ interface DispenserState {
   closeAllDrawers: () => void
   markMissedMedication: (drawerNumber: number) => void
   restockDrawer: (drawerNumber: number, quantity: number) => void
+  setSystemMode: (mode: SystemMode) => void
+  updateNotificationSettings: (settings: Partial<NotificationSettings>) => void
 }
 
 const INITIAL_TIMESTAMP = '2026-05-16T05:45:00.000Z'
@@ -108,8 +124,21 @@ const clearTimers = (drawerNumber: number) => {
   timerRegistry[drawerNumber] = []
 }
 
+const defaultNotificationSettings: NotificationSettings = {
+  enableNotifications: true,
+  enableVoiceReminder: true,
+  enableSimulation: true,
+  enableAutoDrawer: true,
+  buzzerVolume: 70,
+  reminderDelaySeconds: 300,
+  enableEmailNotification: false,
+  enableWhatsAppNotification: false,
+}
+
 export const useDispenserStore = create<DispenserState>((set, get) => ({
   drawers: initialDrawers,
+  systemMode: 'simulation',
+  notificationSettings: defaultNotificationSettings,
   notifications: [
     {
       id: 'notif-initial-1',
@@ -422,6 +451,38 @@ export const useDispenserStore = create<DispenserState>((set, get) => ({
         title: 'Stok Diperbarui',
         description: `Laci ${drawerNumber} menerima stok tambahan sebanyak ${quantity}.`,
         type: 'success',
+      }),
+    })),
+
+  setSystemMode: (mode: SystemMode) =>
+    set((state) => ({
+      systemMode: mode,
+      notifications: pushNotification(state.notifications, {
+        type: 'info',
+        title: 'Mode Sistem Berubah',
+        message: mode === 'simulation' 
+          ? 'Mode Simulasi Aktif - Demo sistem otomatis'
+          : 'Mode Hardware Aktif - Menunggu koneksi ESP32',
+      }),
+      timeline: pushTimeline(state.timeline, {
+        title: 'Mode Sistem Berubah',
+        description: mode === 'simulation'
+          ? 'Mode Simulasi diaktifkan untuk demo dan testing.'
+          : 'Mode Hardware diaktifkan - siap untuk koneksi perangkat asli.',
+        type: 'info',
+      }),
+    })),
+
+  updateNotificationSettings: (settings: Partial<NotificationSettings>) =>
+    set((state) => ({
+      notificationSettings: {
+        ...state.notificationSettings,
+        ...settings,
+      },
+      notifications: pushNotification(state.notifications, {
+        type: 'success',
+        title: 'Pengaturan Disimpan',
+        message: 'Pengaturan notifikasi telah diperbarui.',
       }),
     })),
 }))
