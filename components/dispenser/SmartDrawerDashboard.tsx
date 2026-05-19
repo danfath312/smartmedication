@@ -363,89 +363,93 @@ export function SmartDrawerDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {drawers.map((drawer: MedicationDrawer) => {
               const isSelected = selectedDrawer === drawer.drawerNumber
               const isActive = drawer.status !== 'closed'
               return (
                 <motion.div
                   key={drawer.id}
-                  whileHover={{ y: -4 }}
+                  whileHover={{ y: -6 }}
                   className={cn(
-                    'rounded-2xl border p-4 transition-all duration-300',
+                    'rounded-2xl border p-5 transition-all duration-300 flex flex-col',
                     isActive
                       ? 'border-primary-300 dark:border-primary-700 shadow-soft-lg bg-primary-50/70 dark:bg-primary-900/20'
                       : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800',
                     isSelected && 'ring-2 ring-primary-400'
                   )}
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex-1">
+                      <p className="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 font-semibold">
                         Laci {drawer.drawerNumber}
                       </p>
-                      <h3 className="font-bold text-gray-900 dark:text-white mt-1">
+                      <h3 className="font-bold text-lg text-gray-900 dark:text-white mt-2">
                         {drawer.medicationName || 'Belum diatur'}
                       </h3>
                     </div>
                     <div
                       className={cn(
-                        'w-3 h-3 rounded-full shadow-[0_0_0_6px_rgba(14,165,233,0.08)] animate-pulse',
+                        'w-3 h-3 rounded-full shadow-[0_0_0_6px_rgba(14,165,233,0.08)] animate-pulse flex-shrink-0 mt-1',
                         isActive ? 'bg-success-500' : 'bg-gray-400'
                       )}
                     />
                   </div>
 
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between gap-3">
-                      <span className="text-gray-500 dark:text-gray-400">Dosis</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{drawer.dosage || '-'}</span>
+                  {/* Info Grid */}
+                  <div className="space-y-3 mb-4 text-sm flex-1">
+                    <div className="flex justify-between items-center gap-3">
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">Dosis:</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{drawer.dosage || '-'}</span>
                     </div>
-                    <div className="flex justify-between gap-3">
-                      <span className="text-gray-500 dark:text-gray-400">Jadwal</span>
-                      <span className="font-medium text-gray-900 dark:text-white text-right">{drawer.schedule || '-'}</span>
+                    <div className="flex justify-between items-center gap-3">
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">Jadwal:</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{drawer.schedule || '-'}</span>
                     </div>
-                    <div className="flex justify-between gap-3">
-                      <span className="text-gray-500 dark:text-gray-400">Stok</span>
+                    <div className="flex justify-between items-center gap-3">
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">Stok:</span>
                       <span className={cn('font-semibold', getStockStatusColor(drawer.stockStatus))}>
-                        {drawer.stock}
+                        {drawer.stock} item
                       </span>
                     </div>
-                    <div className="flex justify-between gap-3">
-                      <span className="text-gray-500 dark:text-gray-400">Status</span>
-                      <span className={cn('font-semibold', getDrawerStatusColor(drawer.status))}>
+                    <div className="flex justify-between items-center gap-3">
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">Status:</span>
+                      <span className={cn('font-semibold text-sm', getDrawerStatusColor(drawer.status))}>
                         {getDrawerStatusLabel(drawer.status)}
                       </span>
                     </div>
                   </div>
 
-                  <div className="mt-4 space-y-3">
+                  {/* Progress Bar */}
+                  <div className="mb-4 space-y-2">
                     <ProgressBar
                       value={drawer.stock}
                       max={12}
                       color={drawer.stockStatus === 'empty' ? 'danger' : drawer.stockStatus === 'low' ? 'warning' : 'success'}
                       showPercentage={false}
                     />
-                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                      <span>{getStockStatusLabel(drawer.stockStatus)}</span>
+                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">{getStockStatusLabel(drawer.stockStatus)}</span>
                       <span>{drawer.notes || 'Belum ada catatan'}</span>
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  {/* Buttons */}
+                  <div className="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <button
                       disabled={!deviceOnline || !drawer.medicationName}
                       onClick={() => openDrawer(drawer.drawerNumber, 'manual')}
-                      className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-700 disabled:opacity-40"
+                      className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <DoorOpen className="w-3.5 h-3.5" />
+                      <DoorOpen className="w-4 h-4" />
                       Buka
                     </button>
                     <button
                       onClick={() => consumeDrawer(drawer.drawerNumber, 'manual')}
-                      className="inline-flex items-center gap-2 rounded-lg bg-success-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-success-700"
+                      className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-success-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-success-700"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <CheckCircle2 className="w-4 h-4" />
                       Konfirmasi
                     </button>
                   </div>
@@ -454,23 +458,22 @@ export function SmartDrawerDashboard() {
             })}
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-3 xl:grid-cols-5">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {drawers.map((drawer: MedicationDrawer) => (
-              <button
+              <motion.button
                 key={`open-${drawer.drawerNumber}`}
+                whileHover={{ y: -2 }}
                 onClick={() => openDrawer(drawer.drawerNumber, 'manual')}
                 className={cn(
-                  'rounded-xl border px-4 py-3 text-sm font-semibold transition-all text-left',
+                  'rounded-xl border px-4 py-3 text-sm font-semibold transition-all text-left flex items-center justify-between group',
                   drawer.drawerNumber === openDrawerState?.drawerNumber
                     ? 'bg-primary-600 text-white border-primary-600 shadow-soft-lg'
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700'
                 )}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span>Buka Laci {drawer.drawerNumber}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </button>
+                <span>Buka Laci {drawer.drawerNumber}</span>
+                <ArrowRight className={cn('w-4 h-4 transition-transform group-hover:translate-x-1', drawer.drawerNumber === openDrawerState?.drawerNumber ? 'text-white' : 'text-gray-400')} />
+              </motion.button>
             ))}
           </div>
         </Card>
